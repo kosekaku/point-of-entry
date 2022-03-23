@@ -33,6 +33,7 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
+    "heroku-prebuild": "yarn add global serve",
     "predeploy": "yarn build",
     "deploy": "gh-pages -b main  -d build",
     "start": "react-scripts start",
