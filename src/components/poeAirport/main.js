@@ -9,10 +9,7 @@ import 'react-phone-input-2/lib/style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
-import '../../styles/styles.css';
-import '.././Helpers/customStyles.css'; // custom css
 import InputRe from '.././commons/input';
-import Joi from 'joi-browser';
 import SelectField from '.././commons/select';
 import DatePickerSelect from '../commons/datePicker';
 import PhoneInputBox from '../commons/phoneInput';

@@ -9,8 +9,6 @@ import 'react-phone-input-2/lib/style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
-import '../styles/styles.css';
-import './Helpers/customStyles.css'; // custom css
 import TravellerGuide from './travellerGuides';
 import InputRe from './commons/input';
 import SelectField from './commons/select';
