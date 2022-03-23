@@ -16,6 +16,7 @@
     "dotenv": "^16.0.0",
     "dotenv-webpack": "^7.1.0",
     "lodash": "^4.17.21",
+    "netlify-cli": "^9.13.4",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.2",
     "react-datepicker": "^4.6.0",
@@ -36,7 +37,7 @@
   },
   "scripts": {
     "predeploy": "yarn build",
-    "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -b main  -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -65,5 +66,8 @@
   },
   "devDependencies": {
     "gh-pages": "^3.2.3"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
