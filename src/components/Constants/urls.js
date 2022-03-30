@@ -1,14 +1,14 @@
-
+const {REACT_APP_API_HOST} = process.env;
 const checkVisitsURL = (passPortNumber,nationality) =>{
-  return `http://localhost:8000/api/v1/poe/checkVisitor?passPortNumber=${passPortNumber}&nationality=${nationality}`;
+  return `${REACT_APP_API_HOST}/api/v1/poe/checkVisitor?passPortNumber=${passPortNumber}&nationality=${nationality}`;
 }
 
 
 const getFacilitiesAirportURL = () =>{
-  return 'http://localhost:8000/api/v1/poe/facilities';
+  return `${REACT_APP_API_HOST}/api/v1/poe/facilities`;
 }
 const registerVisitorsURL = () =>{
-  return 'http://localhost:8000/api/v1/poe/visitor';
+  return `${REACT_APP_API_HOST}/api/v1/poe/visitor`;
 }
 
 export {
