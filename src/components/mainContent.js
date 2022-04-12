@@ -49,7 +49,7 @@ const MainContent = () => {
       localStorage.setItem('airports', JSON.stringify(data));
     }
     const storedAirports = localStorage.getItem('airports');
-    if(storedAirports===null || storedAirports===undefined ) return getAirports(); // no local storage support in browser
+    if(storedAirports===null || storedAirports==='undefined' ) return getAirports(); // no local storage support in browser
     setAirports(JSON.parse(storedAirports));
     setLoadingSwitch(false);
   },[loadingSwitch]);

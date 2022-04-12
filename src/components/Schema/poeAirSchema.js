@@ -5,13 +5,21 @@ const poeAirSchema = {
   firstName: Joi.string().required().label('First name'),
   lastName: Joi.string().required().label('Last name'),
   issuingCountry: Joi.string().required().label('Issuing country'),
-  age: Joi.object().required().label('Date of birth is Required and'),
+  age: Joi.object().required().label('Date of birth is Required').error(() => {
+    return {
+      message: 'Date of birth is Required',
+    };
+  }),
   gender: Joi.string().required().label('Gender option'),
   // step 2 data validation
   departureAirport: Joi.string().required().label('Departure airport'),
   departureCountry: Joi.string().required().label('Departure country'),
   flightNo: Joi.string().required().label('Flight number'),
-  arrivalDate: Joi.object().required().label('Arrival Date'),
+  arrivalDate: Joi.object().required().label('Arrival Date').error(() => {
+    return {
+      message: 'Arrival Date is required',
+    };
+  }),
   arrivalAirport: Joi.string().required().label('Point of Entry'),
   stayDuration: Joi.number()
     .required()
@@ -31,13 +39,15 @@ const poeAirSchema = {
   signsSymptomsSelected: Joi.array()
     //.required()
     .label('Signs and symtoms option question'),
+  signsSymptomsSelectedFever: Joi.number().min(35).max(38).label('Body temperature'),
+
 };
 
 //validate before submit
 const validateSchema = (firstName,lastName,issuingCountry,age,
   gender,departureAirport,departureCountry,flightNo,arrivalDate,
   arrivalPort,stayDuration,stayAddress,stayEmail,stayPhone,ebolaContact,
-  covidContact,animalContact, signsSymptoms, signsSymptomsSelected
+  covidContact,animalContact, signsSymptoms, signsSymptomsSelected, signsSymptomsSelectedFever
   ) => {
   // data to validate
   const data1 = {
@@ -65,6 +75,7 @@ const validateSchema = (firstName,lastName,issuingCountry,age,
     animalContact: animalContact.value,
     signsSymptoms: signsSymptoms.value,
     signsSymptomsSelected: signsSymptomsSelected.value,
+    signsSymptomsSelectedFever: signsSymptomsSelectedFever,
   };
 
   const errors = {};

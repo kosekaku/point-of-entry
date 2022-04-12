@@ -14,7 +14,7 @@ const PhoneInputBox = ({ name, label, error, ...rest }) => {
           country={'ss'}
           countryCodeEditable={false}
           enableSearch={true}
-          placeholder='hello phone'
+          placeholder='valid phone ex 920000000'
           inputProps={{
             name: 'phone',
             id: 'phone',

@@ -31,7 +31,7 @@ ReactDOM.render(
         />
         <Route
           exact
-          path="/vistors/:id"
+          path="/visitors/:passportId"
           name="Visitors Print Doc"
           element={<ComponentToPrint/>}
         />

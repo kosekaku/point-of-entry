@@ -13,7 +13,7 @@ const optionHealth = [
  // sign and symptoms list
  const optionsSymptomsList = [
   { value: 'EWZcuvPOrJF', label: 'Fever' }, // Sign/Symptoms Fever
-  { value: 'BH5SRLl5PfH', label: 'Measured temperature in °C' }, // Temperature(when selected true to fever )
+  // { value: 'BH5SRLl5PfH', label: 'Measured temperature in °C' }, // Temperature(when selected true to fever )
   { value: 'JRQbs8iwbj0', label: 'Unexplained bleeding' }, // Unexplained bleeding
   { value: 'HahhmzRvwu8', label: 'Muscle pain' }, // Sign/Symptoms muscle pain
   { value: 'iUEwXfg9CgD', label: 'Headache' }, // Sign/Symptoms headache

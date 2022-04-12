@@ -1,6 +1,6 @@
 import http from './httpServices'
 import { throwError } from '../components/Constants/messages';
-import { checkVisitsURL, getFacilitiesAirportURL, registerVisitorsURL } from '../components/Constants/urls';
+import { checkVisitsURL, getFacilitiesAirportURL, registerVisitorsURL, verifyVisitorsURL } from '../components/Constants/urls';
 // check if user previously visited south sudan
 const checkVisits = async (
   passPortNumber,nationality
@@ -42,7 +42,8 @@ const registerVisitors = async(
         stayEmail, stayPhone, countryVisited1, countryVisited2, countryVisited3,
         ebolaContact, covidContact,animalContact,
         signsSymptoms,
-        signsSymptomsSelected
+        signsSymptomsSelected,
+        feverTemp
 ) =>{
   try {
   
@@ -55,7 +56,8 @@ const registerVisitors = async(
     stayEmail, stayPhone, countryVisited1, countryVisited2, countryVisited3,
     ebolaContact, covidContact,animalContact,
     signsSymptoms,
-    signsSymptomsSelected
+    signsSymptomsSelected,
+    measuredTemperature: feverTemp
   }
 const results = await http.post(url, data);
 return results;
@@ -64,6 +66,17 @@ return results;
 }
 };
 
+// verify id of event when pulling data for card
+const verifyEvent = async (eventId) => {
+  try {
+    const url = verifyVisitorsURL(eventId);    
+    const {data} = await http.get(url);
+    return data.data;
+  } catch (error) {
+    
+  }
+};
+// TODO update event instead of creating a new one
 
 
-export { checkVisits, getFacilitiesAirport,registerVisitors };
+export { checkVisits, getFacilitiesAirport,registerVisitors, verifyEvent };

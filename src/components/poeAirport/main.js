@@ -21,15 +21,15 @@ import {validateProperty} from '../Schema/commonSchema';
 const POEAirport = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-
   // validations states data and error
   const [error, setError] = useState({});
   const [data, setData] = useState({});
 
   // declaring and initiazing states
-  const [loadingTEI, setLoadingTEI] = useState(true);
+  const [loadingTEI, setLoadingTEI] = useState('');
   const [handleSubmitNext1, setHandleSubmitNext1] = useState(0);
   const [handleSubmitClicked, setHandleSubmitClicked] = useState(0);
+  const [submitClicked, setSubmitClicked] = useState(0);
 
   // POE main form
   const [passportId, setPassportId] = useState('');
@@ -66,8 +66,13 @@ const POEAirport = () => {
   const [animalContact, setAnimalContact] = useState('');
   const [signsSymptoms, setSignsSymptoms] = useState('');
   const [signsSymptomsSelected, setSignsSymptomsSelected] = useState([]);
+  const [feverTemp, setFeverTemp] = useState(36);
+  // buttons
+  const [nextbutton1Clicked, setNextbutton1Clicked]= useState(false);
+  const [nextbutton2Clicked, setNextbutton2Clicked]= useState(false);
   let { passportId: idParam } = useParams();
   useEffect(() => {
+
     if (state === null) return navigate('/', { replace: true });
     const {
       nationality: initialNationality,
@@ -85,11 +90,15 @@ const POEAirport = () => {
     setPassportId(initialPassportId);
     setTravelMode(initialTravelMode);
     setIssuingCountry(initialNationality);
-    setFirstName(initialFirstName);
-    setLastName(initialLastName);
-    setGender({ value: initialGender, label: initialGender });
-    setStayEmail(initialEmail);
-    setStayPhone(initialPhone);
+    setStayDuration(nationalitySelected.value==='SS'? 365 : '');
+    const checkUndefined = (data, setData) => {
+     return data !== 'undefined' ? setData : ''
+    }
+    checkUndefined(initialFirstName, setFirstName(initialFirstName));
+    checkUndefined(initialLastName, setLastName(initialLastName));
+    checkUndefined(initialGender, setGender({ value: initialGender, label: initialGender }));
+    checkUndefined(initialEmail, setStayEmail(initialEmail));
+    checkUndefined(initialPhone, setStayPhone(initialPhone));
     setAirportOptions(airports);
   }, [idParam]);
 
@@ -108,17 +117,19 @@ const POEAirport = () => {
   // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoadingTEI(true);
     setHandleSubmitClicked(1);
     setHandleSubmitNext1(1); 
+
     const errors = validateSchema(firstName,lastName,issuingCountry,age,
       gender,departureAirport,departureCountry,flightNo,arrivalDate,
       arrivalPort,stayDuration,stayAddress,stayEmail,stayPhone,ebolaContact,
-      covidContact,animalContact, signsSymptoms, signsSymptomsSelected)
-    setError(errors || {});
+      covidContact,animalContact, signsSymptoms, signsSymptomsSelected,feverTemp)
+      const testN = parseInt(feverTemp)
+      setError(errors || {});
     if (errors) return;
     // call events submission api
-    toast('Submitting data..');
     const results = await registerVisitors(
       firstName,
       lastName,
@@ -144,39 +155,47 @@ const POEAirport = () => {
       covidContact.value,
       animalContact.value,
       signsSymptoms.value,
-      signsSymptomsSelected
+      signsSymptomsSelected,
+      testN,
     );
-    if(!results.data) return toast('Failed to submit data, please try again');
-    toast.success('success, present this qrcode to the airport health check authorities');
-    const {data: visitorId} = results.data;
-    navigate(`/vistors/${visitorId}`, {state: {
-      visitorId,
-      firstName,
-      lastName,
-      nationality: nationalitySelected,
-      passportId,
-      issuingCountry: issuingCountry,
-      dateOfBirth: age,
-      gender: gender.value,
-      travelMode: travelMode.value,
-      departureAirport,
-      departureCountry: departureCountry.value,
-      flightNo,
-      arrivalDate: arrivalDate,
-      arrivalPort: arrivalPort,
-      stayDuration,
-      stayAddress,
-      stayEmail,
-      stayPhone,
-      countryVisited1: countryVisited1,
-      countryVisited2: countryVisited2,
-      countryVisited3: countryVisited3,
-      ebolaContact: ebolaContact.value,
-      covidContact: covidContact.value,
-      animalContact: animalContact.value,
-      signsSymptoms: signsSymptoms.value,
-      signsSymptomsSelected
-    }});
+    if (results !== undefined){
+      setLoadingTEI(false);
+      setSubmitClicked(0);
+      const {data: visitorId} = results.data;
+      navigate(`/visitors/${passportId}/?id=${visitorId}`, {state: {
+        visitorId,
+        firstName,
+        lastName,
+        nationality: nationalitySelected,
+        passportId,
+        issuingCountry: issuingCountry,
+        dateOfBirth: age,
+        gender: gender.value,
+        travelMode: travelMode.value,
+        departureAirport,
+        departureCountry: departureCountry.value,
+        flightNo,
+        arrivalDate: arrivalDate,
+        arrivalPort: arrivalPort,
+        stayDuration,
+        stayAddress,
+        stayEmail,
+        stayPhone,
+        countryVisited1: countryVisited1,
+        countryVisited2: countryVisited2,
+        countryVisited3: countryVisited3,
+        ebolaContact: ebolaContact.value,
+        covidContact: covidContact.value,
+        animalContact: animalContact.value,
+        signsSymptoms: signsSymptoms.value,
+        signsSymptomsSelected
+      }});
+    
+    } else {
+      setLoadingTEI(false);
+      setSubmitClicked(0);
+      // TODO display error message to user and allow them to send again
+    }
   };
 
   //helper func for input
@@ -282,6 +301,7 @@ const POEAirport = () => {
 
   return (
     <>
+    
       {nationalitySelected !== '' && (
         <div className="container">
           <div style={{ background: 'rgba(250,255,255,0.6)' }}>
@@ -394,7 +414,7 @@ const POEAirport = () => {
 
                   {/* TODO hide button after moving to step 2 */}
                   <div className="card-text">
-                    <button type="submit" className="btn btn-secondary">
+                    <button type="submit" onClick={()=> setNextbutton1Clicked(true)}  className="btn btn-secondary">
                       NEXT
                     </button>
                   </div>
@@ -408,7 +428,7 @@ const POEAirport = () => {
                   !error.hasOwnProperty('issuingCountry') &&
                   !error.hasOwnProperty('age') &&
                   !error.hasOwnProperty('gender') &&
-                  handleSubmitNext1 === 1 && (
+                  nextbutton1Clicked === true && (
                     <>
                 
                       <form onSubmit={handleSubmit}>
@@ -484,8 +504,11 @@ const POEAirport = () => {
                             setStayDuration,
                             'Enter stay duration in days Ex. 10',
                             'text',
-                            stayDuration
+                            stayDuration,
+                            false,
+                            // nationalitySelected.value==='SS'? true: false
                           )}
+   
                           {renderInput(
                             'stayAddress',
                             'Physical Address in South Sudan',
@@ -493,7 +516,8 @@ const POEAirport = () => {
                             setStayAddress,
                             'Enter address, Ex. Juba NaBari or Juba times hotel',
                             'text',
-                            stayAddress
+                            stayAddress,
+                        
                           )}
                           {renderInput(
                             'stayEmail',
@@ -513,7 +537,7 @@ const POEAirport = () => {
                           )}
                         </div>
                         <div className="card-text">
-                          <button type="submit" className="btn btn-secondary">
+                          <button type="submit" onClick={()=> setNextbutton2Clicked(true)} className="btn btn-secondary">
                             NEXT
                           </button>
                         </div>
@@ -535,7 +559,7 @@ const POEAirport = () => {
                   !error.hasOwnProperty('stayAddress') &&
                   !error.hasOwnProperty('stayEmail') &&
                   !error.hasOwnProperty('stayPhone') &&
-                  handleSubmitNext1 === 1 && (
+                  nextbutton2Clicked === true && (
                     <>
                       <form onSubmit={handleSubmit}>
                         <div className="card-body">
@@ -624,13 +648,46 @@ const POEAirport = () => {
                               signsSymptomsSelected,
                               true
                             )}
+
+                            {signsSymptoms !== '' &&
+                            signsSymptoms.value === 'yes' &&
+                            (signsSymptomsSelected.some(({value: id }) => id=== 'EWZcuvPOrJF')) &&
+                            // render health options
+                            
+                          renderInput(
+                              'signsSymptomsSelectedFever',
+                              'Fever: Enter Temperature mesured in °C',
+                              error,
+                              setFeverTemp,
+                              'Enter your body temperature',
+                              'text',
+                              feverTemp,
+                          
+                            )}
                         </div>
                         <div className="card-text">
-                          <button type="submit" className="btn btn-secondary">
+                          <button type="submit" onClick={()=> setSubmitClicked(1)} className="btn btn-secondary">
                             SUBMIT
                           </button>
+                          {
+                        loadingTEI === true &&
+                        submitClicked === 1 &&
+                      <span>
+
+                         <button className="btn " type="text" disabled>
+                        <span
+                          className="spinner-border spinner-border-sm"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Sending data, please wait!
+                      </button> 
+                    </span>
+                      }
                         </div>
+                        
                       </form>
+                      
                       {/* card footer */}
                     </>
                   )}
@@ -638,9 +695,15 @@ const POEAirport = () => {
               {/*card footer*/}
             </div>
 
+         
             {/* end POE */}
           </div>
-          <ToastContainer
+          
+        </div>
+        
+      )}
+      {<ToastContainer/>}
+      {/* <ToastContainer
             position="top-center"
             //autoClose={loadingTime}
             hideProgressBar={false}
@@ -650,10 +713,9 @@ const POEAirport = () => {
             pauseOnFocusLoss
             draggable
             pauseOnHover
-          />
-        </div>
-      )}
+          />  */}
     </>
+    
   );
 };
 
